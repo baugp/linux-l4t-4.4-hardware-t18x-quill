@@ -25,36 +25,6 @@
 					status = "okay";
 				};
 			};
-			module4 {
-				status = "okay";
-				drivernode0 {
-					status = "okay";
-				};
-			};
-			module3 {
-				status = "okay";
-				drivernode0 {
-					status = "okay";
-				};
-			};
-			module2 {
-				status = "okay";
-				drivernode0 {
-					status = "okay";
-				};
-			};
-			module1 {
-				status = "okay";
-				drivernode0 {
-					status = "okay";
-				};
-			};
-			module0 {
-				status = "okay";
-				drivernode0 {
-					status = "okay";
-				};
-			};
 		};
 	};
 };
