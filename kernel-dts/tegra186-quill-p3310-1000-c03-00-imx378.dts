@@ -1,0 +1,88 @@
+/*
+ * tegra186-quill-p3310-1000-c03-00-imx378.dts: DTS file for Quill
+ * to enable imx378 image sensor.
+ *
+ * Copyright (c) 2017, CenturyArks All rights reserved.
+ * Copyright (c) 2016, NVIDIA CORPORATION.  All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ */
+
+#include "tegra186-quill-p3310-1000-c03-00-base.dts"
+#include "quill-platforms/tegra186-quill-camera-imx378-c03.dtsi"
+
+/ {
+	nvidia,dtsfilename = __FILE__;
+	
+	/* Remap CAM1_MCLK to an input pin */
+	pinmux@2430000 {
+		common {
+			extperiph2_clk_po1 {
+				nvidia,pins = "extperiph2_clk_po1";
+				nvidia,function = "rsvd1";
+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+				nvidia,lpdr = <TEGRA_PIN_DISABLE>;
+			};
+		};
+	};
+
+
+	/* GPIO */
+	gpio@2200000 {
+		camera-control-input {
+			status = "disabled";
+		};
+		camera-control-output-low {
+			status = "disabled";
+		};
+		camera-control-output-high {
+			gpio-hog;
+			gpios = <TEGRA_MAIN_GPIO(N, 2) 0>;
+			label = "cam1-pwdn";
+			output-high;
+			status = "okay";
+		};
+	};
+
+	host1x {
+		vi_base: vi@15700000 {
+			ports {
+				vi_port0: port@0 {
+					status = "okay";
+					vi_in0: endpoint {
+						status = "okay";
+					};
+				};
+			};
+		};
+		csi_base: nvcsi@150c0000 {
+			csi_chan0: channel@0 {
+				status = "okay";
+				ports {
+					csi_chan0_port0: port@0 {
+						status = "okay";
+						csi_in0: endpoint@0 {
+							status = "okay";
+						};
+					};
+					csi_chan0_port1: port@1 {
+						status = "okay";
+						csi_out0: endpoint@1 {
+							status = "okay";
+						};
+					};
+				};
+			};
+		};
+	};
+};
