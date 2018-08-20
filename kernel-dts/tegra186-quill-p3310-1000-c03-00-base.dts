@@ -152,4 +152,94 @@
 			};
 		};
 	};
+
+	//SPI1                     0x03210000    0x0321ffff        arspi.h
+	//SPI2    AON_CLUSTER        0x0c260000    0x0c26ffff        arspi.h
+	//SPI3                     0x03230000    0x0323ffff        arspi.h
+	//SPI4                     0x03240000    0x0324ffff        arspi.h
+
+	//3240000 
+	//c260000
+
+	//SPI0 E3 F3 E4 F4 G14=Interrupt SPI0 before "Display Connector" now "IMU"
+	spi@c260000 {
+		status = "okay";
+		spidev@0 {
+			#address-cells = <0x1>;
+			#size-cells = <0x0>;
+			compatible = "spidev";
+			reg = <0>;
+			spi-max-frequency=<25000000>;
+			irq-gpio = <&tegra_aon_gpio TEGRA_AON_GPIO(AA, 2) 0x01>;
+			interrupt-parent = <&tegra_aon_gpio>;
+			interrupts = <TEGRA_AON_GPIO(AA, 2) 0x01>; /* GPIO_PAA2 */
+		};
+	};
+
+
+	//SPI1 G13 E14 F14 F13 before Expansion Header now CAN-MCP251x
+	spi@3240000 {
+		status = "okay";
+		spidev@0 {
+			compatible = "spidev";
+			reg = <0>;
+			spi-max-frequency=<25000000>;
+		};
+		spidev@1 {
+			compatible = "spidev";
+			reg = <1>;
+			spi-max-frequency=<25000000>;
+		};
+
+	};
+
+	//SPI2 H14 H15 G15 G16 F16 before Expansion Header now SPI connector
+	spi@3230000 {
+		status = "okay";
+		spidev@0 {
+			compatible = "spidev";
+			reg = <0>;
+			spi-max-frequency=<25000000>;
+		};
+		spidev@1 {
+			compatible = "spidev";
+			reg = <1>;
+			spi-max-frequency=<25000000>;
+		};
+	};
+
+
+	fixed-regulators {
+		vdd_fan: regulator@13 {
+			gpio = <&tegra_main_gpio TEGRA_MAIN_GPIO(J, 6) GPIO_ACTIVE_LOW>;  //alternative gpio for auvidea carrier boards
+		};
+	};
+
+	pwm_fan_shared_data: pfsd {
+		status = "okay";
+		num_resources = <0>;
+		secret = <47>;
+		active_steps = <10>;
+		active_rpm = <0 1000 2000 3000 4000 5000 6000 7000 10000 11000>;
+		rpm_diff_tolerance = <2>;
+		active_rru = <40 2 1 1 1 1 1 1 1 1>;
+		active_rrd = <40 2 1 1 1 1 1 1 1 1>;
+		state_cap_lookup = <2 2 2 2 3 3 3 4 4 4>;
+		pwm_period = <45334>;
+		pwm_id = <4>;
+		step_time = <100>; /* mesecs */
+		state_cap = <7>;
+		active_pwm_max = <256>;
+		tach_period = <1000>;
+		//pwm_gpio = <&tegra_aon_gpio TEGRA_AON_GPIO(V, 6) GPIO_ACTIVE_LOW>; /* TEGRA_MAIN_GPIO_PV6 */
+		//pwm_gpio = <&tegra_main_gpio TEGRA_MAIN_GPIO(J, 6) GPIO_ACTIVE_LOW>; /* TEGRA_MAIN_GPIO_PJ6 */
+	};
+	pwm-fan {
+		status = "okay";
+		compatible = "pwm-fan";
+
+		shared_data = <&pwm_fan_shared_data>;
+		active_pwm = <0 80 120 160 255 255 255 255 255 255>;
+	};
+
 };
