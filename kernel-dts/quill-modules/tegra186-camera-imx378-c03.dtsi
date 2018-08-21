@@ -28,7 +28,7 @@
 				port@0 {
 					reg = <0>;
 					vi_in0: endpoint {
-						csi-port = <0>;
+						csi-port = <2>;
 						bus-width = <2>;
 						remote-endpoint = <&csi_out0>;
 					};
@@ -46,7 +46,7 @@
 					port@0 {
 						reg = <0>;
 						csi_in0: endpoint@0 {
-							csi-port = <0>;
+							csi-port = <2>;
 							bus-width = <2>;
 							remote-endpoint = <&imx378_out0>;
 						};
@@ -62,7 +62,7 @@
 		};
 	};
 
-	i2c@3160000 {
+	i2c@c240000 {
 		imx378_a@1a {
 			devnode = "video0";
 			compatible = "nvidia,imx378";
@@ -80,7 +80,7 @@
 			mode0 { // IMX378_MODE_4056X3040
 				mclk_khz = "18000";
 				num_lanes = "2";
-				tegra_sinterface = "serial_a";
+				tegra_sinterface = "serial_c";
 				discontinuous_clk = "yes";
 				cil_settletime = "0";
 				active_w = "4056";
@@ -104,7 +104,7 @@
 			mode1 { // IMX378_MODE_3840X2160
 				mclk_khz = "18000";
 				num_lanes = "2";
-				tegra_sinterface = "serial_a";
+				tegra_sinterface = "serial_c";
 				discontinuous_clk = "yes";
 				cil_settletime = "0";
 				active_w = "3840";
@@ -128,7 +128,7 @@
 			mode2 { // IMX378_MODE_1920X1080
 				mclk_khz = "18000";
 				num_lanes = "2";
-				tegra_sinterface = "serial_a";
+				tegra_sinterface = "serial_c";
 				discontinuous_clk = "yes";
 				cil_settletime = "0";
 				active_w = "1920";
@@ -152,7 +152,7 @@
 			mode3 { // IMX378_MODE_640X480
 				mclk_khz = "18000";
 				num_lanes = "2";
-				tegra_sinterface = "serial_a";
+				tegra_sinterface = "serial_c";
 				discontinuous_clk = "yes";
 				cil_settletime = "0";
 				active_w = "640";
@@ -179,7 +179,7 @@
 				port@0 {
 					reg = <0>;
 					imx378_out0: endpoint {
-						csi-port = <0>;
+						csi-port = <2>;
 						bus-width = <2>;
 						remote-endpoint = <&csi_in0>;
 					};
@@ -251,9 +251,9 @@
 					/* Declare PCL support driver (classically known as guid)  */
 					pcl_id = "v4l2_sensor";
 					/* Driver v4l2 device name */
-					devname = "imx378 0-001a";
+					devname = "imx378 1-001a";
 					/* Declare the device-tree hierarchy to driver instance */
-					proc-device-tree = "/proc/device-tree/i2c@3160000/imx378_a@1a";
+					proc-device-tree = "/proc/device-tree/i2c@c240000/imx378_a@1a";
 				};
 				drivernode1 {
 					/* Declare PCL support driver (classically known as guid)  */

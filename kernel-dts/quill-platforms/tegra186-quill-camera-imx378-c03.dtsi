@@ -27,15 +27,15 @@
 /* camera control gpio definitions */
 
 / {
-	i2c@3160000 {
+	i2c@c240000 {
 		imx378_a@1a {
 			/* Define any required hw resources needed by driver */
 			/* ie. clocks, io pins, power sources */
-			clocks = <&tegra_car TEGRA186_CLK_EXTPERIPH2>,
+			clocks = <&tegra_car TEGRA186_CLK_EXTPERIPH3>,
 					 <&tegra_car TEGRA186_CLK_PLLP_OUT0>;
-			clock-names = "extperiph2", "pllp_grtba";
-			mclk = "extperiph2";
-			reset-gpios = <&tegra_main_gpio TEGRA_MAIN_GPIO(N, 2) GPIO_ACTIVE_HIGH>;
+			clock-names = "extperiph3", "pllp_grtba";
+			mclk = "extperiph3";
+			reset-gpios = <&tegra_main_gpio TEGRA_MAIN_GPIO(R, 5) GPIO_ACTIVE_HIGH>;
 			vana-supply = <&vdd_3v3>;
 			vif-supply = <&vdd_3v3>;
 			vdig-supply = <&vdd_3v3>;

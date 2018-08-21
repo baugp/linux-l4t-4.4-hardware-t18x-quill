@@ -22,12 +22,12 @@
 / {
 	nvidia,dtsfilename = __FILE__;
 	
-	/* Remap CAM1_MCLK to an input pin */
+	/* Remap CAM2_MCLK to an input pin */
 	pinmux@2430000 {
 		common {
-			extperiph2_clk_po1 {
-				nvidia,pins = "extperiph2_clk_po1";
-				nvidia,function = "rsvd1";
+			gpio_cam2_pn1 {
+				nvidia,pins = "gpio_cam2_pn1";
+				nvidia,function = "rsvd2";
 				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
 				nvidia,tristate = <TEGRA_PIN_ENABLE>;
 				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
@@ -47,8 +47,8 @@
 		};
 		camera-control-output-high {
 			gpio-hog;
-			gpios = <TEGRA_MAIN_GPIO(N, 2) 0>;
-			label = "cam1-pwdn";
+			gpios = <TEGRA_MAIN_GPIO(R, 5) 0>;
+			label = "cam0-rst";
 			output-high;
 			status = "okay";
 		};
