@@ -1,0 +1,266 @@
+/*
+ * Copyright (c) 2017, CenturyArks All rights reserved.
+ * Copyright (c) 2016, NVIDIA CORPORATION.  All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "tegra186-camera-imx378-c03-cu.dtsi"
+
+/ {
+	host1x {
+		vi@15700000 {
+			num-channels = <1>;
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@0 {
+					reg = <0>;
+					vi_in0: endpoint {
+						csi-port = <0>;
+						bus-width = <2>;
+						remote-endpoint = <&csi_out0>;
+					};
+				};
+			};
+		};
+
+		nvcsi@150c0000 {
+			num-channels = <1>;
+			channel@0 {
+				reg = <0>;
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					port@0 {
+						reg = <0>;
+						csi_in0: endpoint@0 {
+							csi-port = <0>;
+							bus-width = <2>;
+							remote-endpoint = <&imx378_out0>;
+						};
+					};
+					port@1 {
+						reg = <1>;
+						csi_out0: endpoint@1 {
+							remote-endpoint = <&vi_in0>;
+						};
+					};
+				};
+			};
+		};
+	};
+
+	i2c@3160000 {
+		imx378_a@1a {
+			devnode = "video0";
+			compatible = "nvidia,imx378";
+			reg = <0x1a>;
+
+			physical_w = "7.564";
+			physical_h = "5.476";
+
+			sensor_model ="imx378";
+			dovdd-supply = <&vdd_3v3>;
+			avdd-reg = "vana";
+			dvdd-reg = "vdig";
+			iovdd-reg = "dovdd";
+
+			mode0 { // IMX378_MODE_4056X3040
+				mclk_khz = "18000";
+				num_lanes = "2";
+				tegra_sinterface = "serial_a";
+				discontinuous_clk = "yes";
+				cil_settletime = "0";
+				active_w = "4056";
+				active_h = "3040";
+				pixel_t = "bayer_rggb";
+				readout_orientation = "90";
+				line_length = "4350";
+				inherent_gain = "1";
+				mclk_multiplier = "116";
+				pix_clk_hz = "417600000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "22.0";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "1";
+				max_framerate = "30";
+				min_exp_time = "1";
+				max_exp_time = "65515";
+			};
+			mode1 { // IMX378_MODE_3840X2160
+				mclk_khz = "18000";
+				num_lanes = "2";
+				tegra_sinterface = "serial_a";
+				discontinuous_clk = "yes";
+				cil_settletime = "0";
+				active_w = "3840";
+				active_h = "2160";
+				pixel_t = "bayer_rggb";
+				readout_orientation = "90";
+				line_length = "4100";
+				inherent_gain = "1";
+				mclk_multiplier = "82";
+				pix_clk_hz = "295200000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "22.0";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "1";
+				max_framerate = "30";
+				min_exp_time = "1";
+				max_exp_time = "65515";
+			};
+			mode2 { // IMX378_MODE_1920X1080
+				mclk_khz = "18000";
+				num_lanes = "2";
+				tegra_sinterface = "serial_a";
+				discontinuous_clk = "yes";
+				cil_settletime = "0";
+				active_w = "1920";
+				active_h = "1080";
+				pixel_t = "bayer_rggb";
+				readout_orientation = "90";
+				line_length = "2050";
+				inherent_gain = "1";
+				mclk_multiplier = "82";
+				pix_clk_hz = "295200000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "22.0";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "1";
+				max_framerate = "120";
+				min_exp_time = "1";
+				max_exp_time = "65515";
+			};
+			mode3 { // IMX378_MODE_640X480
+				mclk_khz = "18000";
+				num_lanes = "2";
+				tegra_sinterface = "serial_a";
+				discontinuous_clk = "yes";
+				cil_settletime = "0";
+				active_w = "640";
+				active_h = "480";
+				pixel_t = "bayer_rggb";
+				readout_orientation = "90";
+				line_length = "1500";
+				inherent_gain = "1";
+				mclk_multiplier = "82";
+				pix_clk_hz = "295200000";
+
+				min_gain_val = "1.0";
+				max_gain_val = "22.0";
+				min_hdr_ratio = "1";
+				max_hdr_ratio = "64";
+				min_framerate = "1";
+				max_framerate = "240";
+				min_exp_time = "1";
+				max_exp_time = "65515";
+			};
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@0 {
+					reg = <0>;
+					imx378_out0: endpoint {
+						csi-port = <0>;
+						bus-width = <2>;
+						remote-endpoint = <&csi_in0>;
+					};
+				};
+			};
+		};
+	};
+
+	lens_imx378_a@3e {
+		min_focus_distance = "0.0";
+		hyper_focal = "0.0";
+		focal_length = "4.52";
+		f_number = "2.0";
+		aperture = "2.0";
+	};
+
+	tegra-camera-platform {
+		compatible = "nvidia, tegra-camera-platform";
+		/**
+		* Physical settings to calculate max ISO BW
+		*
+		* num_csi_lanes = <>;
+		* Total number of CSI lanes when all cameras are active
+		*
+		* max_lane_speed = <>;
+		* Max lane speed in Kbit/s
+		*
+		* min_bits_per_pixel = <>;
+		* Min bits per pixel
+		*
+		* vi_peak_byte_per_pixel = <>;
+		* Max byte per pixel for the VI ISO case
+		*
+		* vi_bw_margin_pct = <>;
+		* Vi bandwidth margin in percentage
+		*
+		* max_pixel_rate = <>;
+		* Max pixel rate in Kpixel/s for the ISP ISO case
+		*
+		* isp_peak_byte_per_pixel = <>;
+		* Max byte per pixel for the ISP ISO case
+		*
+		* isp_bw_margin_pct = <>;
+		* Isp bandwidth margin in percentage
+		*/
+		num_csi_lanes = <2>;
+		max_lane_speed = <1500000>;
+		min_bits_per_pixel = <10>;
+		vi_peak_byte_per_pixel = <2>;
+		vi_bw_margin_pct = <25>;
+		max_pixel_rate = <750000>;
+		isp_peak_byte_per_pixel = <5>;
+		isp_bw_margin_pct = <25>;
+
+		/**
+		 * The general guideline for naming badge_info contains 3 parts, and is as follows,
+		 * The first part is the camera_board_id for the module; if the module is in a FFD
+		 * platform, then use the platform name for this part.
+		 * The second part contains the position of the module, ex. "rear" or "front".
+		 * The third part contains the last 6 characters of a part number which is found
+		 * in the module's specsheet from the vender.
+		 */
+		modules {
+			module0 {
+				badge = "imx378_CH1_396CP";
+				position = "0";
+				orientation = "1";
+				drivernode0 {
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_sensor";
+					/* Driver v4l2 device name */
+					devname = "imx378 0-001a";
+					/* Declare the device-tree hierarchy to driver instance */
+					proc-device-tree = "/proc/device-tree/i2c@3160000/imx378_a@1a";
+				};
+				drivernode1 {
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_lens";
+					proc-device-tree = "/proc/device-tree/lens_imx378_a@3e/";
+				};
+			};
+		};
+	};
+};

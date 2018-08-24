@@ -1,0 +1,242 @@
+/*
+ * tegra186-quill-p3310-1000-c03-00-imx378.dts: DTS file for Quill
+ * to enable imx378 image sensor.
+ *
+ * Copyright (c) 2017, CenturyArks All rights reserved.
+ * Copyright (c) 2016, NVIDIA CORPORATION.  All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ */
+
+#include "tegra186-quill-p3310-1000-c03-00-base.dts"
+#include "quill-platforms/tegra186-quill-j100-camera-imx378.dtsi"
+#include "quill-platforms/tegra186-quill-j100-camera-hdmi2csi.dtsi"
+
+/ {
+	nvidia,dtsfilename = __FILE__;
+	
+	pinmux@2430000 {
+		common {
+			/*
+			 * Remap the INT pin of TC358840 (CAM2_MCLK) to GPIO(N,1) via CSI-EF port on Auvidea J100
+			 * CA378-AOIS has no connection to CAM2_MCLK if connected through HDMI2CSI-J100 via CSI-CD port on Auvidea J100
+			 */
+			gpio_cam2_pn1 {
+				nvidia,pins = "gpio_cam2_pn1";
+				nvidia,function = "rsvd2";
+				nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+				nvidia,tristate = <TEGRA_PIN_ENABLE>;
+				nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+				nvidia,lpdr = <TEGRA_PIN_DISABLE>;
+			};
+		};
+	};
+
+	/* GPIO */
+	gpio@2200000 {
+		/* HDMI2CSI-J100 */
+		camera-control-input {
+			status = "okay";
+			gpio-hog;
+			input;
+			gpios = <TEGRA_MAIN_GPIO(N, 1) 0>;
+			label = "cam1-int";
+		};
+		/* HDMI2CSI-J100 */
+		camera-control-output-low {
+			status = "okay";
+			gpio-hog;
+			output-low;
+			gpios = <TEGRA_MAIN_GPIO(R, 1) 0>;
+			label = "cam1-rst";
+		};
+		/* CA378-AOIS */
+		camera-control-output-high {
+			gpio-hog;
+			gpios = <TEGRA_MAIN_GPIO(R, 5) 0>;
+			label = "cam0-rst";
+			output-high;
+			status = "okay";
+		};
+	};
+	
+	host1x {
+		vi@15700000 {
+			num-channels = <2>;
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@0 {
+					status = "okay";
+					reg = <0>;
+					hdmi2csi_vi_in0: endpoint {
+						status = "okay";
+						csi-port = <4>;
+						bus-width = <4>;
+						remote-endpoint = <&hdmi2csi_csi_out0>;
+					};
+				};
+				port@1 {
+					status = "okay";
+					reg = <1>;
+					imx378_vi_in0: endpoint {
+						status = "okay";
+						csi-port = <2>;
+						bus-width = <2>;
+						remote-endpoint = <&imx378_csi_out0>;
+					};
+				};
+			};
+		};
+
+		nvcsi@150c0000 {
+			num-channels = <2>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			channel@0 {
+				status = "okay";
+				reg = <0>;
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					port@0 {
+						status = "okay";
+						reg = <0>;
+						hdmi2csi_csi_in0: endpoint@0 {
+							status = "okay";
+							csi-port = <4>;
+							bus-width = <4>;
+							remote-endpoint = <&hdmi2csi_tc358840_out0>;
+						};
+					};
+					port@1 {
+						status = "okay";
+						reg = <1>;
+						hdmi2csi_csi_out0: endpoint@1 {
+							status = "okay";
+							remote-endpoint = <&hdmi2csi_vi_in0>;
+						};
+					};
+				};
+			};
+			channel@1 {
+				status = "okay";
+				reg = <1>;
+				ports {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					port@0 {
+						status = "okay";
+						reg = <0>;
+						imx378_csi_in0: endpoint@2 {
+							status = "okay";
+							csi-port = <2>;
+							bus-width = <2>;
+							remote-endpoint = <&imx378_out0>;
+						};
+					};
+					port@1 {
+						status = "okay";
+						reg = <1>;
+						imx378_csi_out0: endpoint@3 {
+							status = "okay";
+							remote-endpoint = <&imx378_vi_in0>;
+						};
+					};
+				};
+			};
+		};
+	};
+	
+	tegra-camera-platform {
+		/**
+		* Physical settings to calculate max ISO BW
+		*
+		* num_csi_lanes = <>;
+		* Total number of CSI lanes when all cameras are active
+		*
+		* max_lane_speed = <>;
+		* Max lane speed in Kbit/s
+		*
+		* min_bits_per_pixel = <>;
+		* Min bits per pixel
+		*
+		* vi_peak_byte_per_pixel = <>;
+		* Max byte per pixel for the VI ISO case
+		*
+		* vi_bw_margin_pct = <>;
+		* Vi bandwidth margin in percentage
+		*
+		* max_pixel_rate = <>;
+		* Max pixel rate in Kpixel/s for the ISP ISO case
+		*
+		* isp_peak_byte_per_pixel = <>;
+		* Max byte per pixel for the ISP ISO case
+		*
+		* isp_bw_margin_pct = <>;
+		* Isp bandwidth margin in percentage
+		*/
+		num_csi_lanes = <6>;
+		max_lane_speed = <1500000>;
+		min_bits_per_pixel = <16>;
+		vi_peak_byte_per_pixel = <3>;
+		vi_bw_margin_pct = <25>;
+		// max_pixel_rate = <0>;
+		isp_peak_byte_per_pixel = <3>;
+		isp_bw_margin_pct = <25>;
+		
+		/**
+		 * The general guideline for naming badge_info contains 3 parts, and is as follows,
+		 * The first part is the camera_board_id for the module; if the module is in a FFD
+		 * platform, then use the platform name for this part.
+		 * The second part contains the position of the module, ex. "rear" or "front".
+		 * The third part contains the last 6 characters of a part number which is found
+		 * in the module's specsheet from the vender.
+		 */
+		modules {
+			module0 {
+				status = "okay";
+				badge = "hdmi2csi_left_358840";
+				position = "0";
+				orientation = "1";
+				drivernode0 {
+					status = "okay";
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_sensor";
+					/* Driver v4l2 device name */
+					devname = "tc358840 7-000f";
+					/* Declare the device-tree hierarchy to driver instance */
+					proc-device-tree = "/proc/device-tree/i2c@c250000/tc358840@0f";
+				};
+			};
+			module1 {
+				status = "okay";
+				badge = "imx378_CH1_396CP";
+				position = "1";
+				orientation = "1";
+				drivernode0 {
+					status = "okay";
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_sensor";
+					/* Driver v4l2 device name */
+					devname = "imx378 1-001a";
+					/* Declare the device-tree hierarchy to driver instance */
+					proc-device-tree = "/proc/device-tree/i2c@c240000/imx378_a@1a";
+				};
+				drivernode1 {
+					/* Declare PCL support driver (classically known as guid)  */
+					pcl_id = "v4l2_lens";
+					proc-device-tree = "/proc/device-tree/lens_imx378_a@3e/";
+				};
+			};
+		};
+	};
+};

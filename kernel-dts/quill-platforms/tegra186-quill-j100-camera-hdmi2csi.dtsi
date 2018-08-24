@@ -1,0 +1,62 @@
+/ {
+	i2c@c250000 {
+		status = "okay";
+
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		/* HDMI IN A (Full HD) */
+		tc358840@0f {
+			compatible = "toshiba,tc358840";
+			reg = <0x0f>;
+			status = "okay";
+			devnode = "video0";
+
+			/* Power Supply */
+			vdig-supply = <&vdd_3v3>;
+			vif-supply = <&vdd_3v3>;
+
+			/* Reset */
+			reset-gpios = <&tegra_main_gpio TEGRA_MAIN_GPIO(R, 1) GPIO_ACTIVE_LOW>;
+
+			/* Interrupt */
+			interrupt-parent = <&tegra_main_gpio>;
+			interrupts = <TEGRA_MAIN_GPIO(N, 1) IRQ_TYPE_LEVEL_HIGH>;
+
+			refclk_hz = <48000000>; /* 40 - 50 MHz */
+
+			ddc5v_delay = <1>;	/* 50 ms */
+
+			/* HDCP */
+			/* TODO: Not yet implemented */
+			enable_hdcp = <0>;
+
+			/* CSI Output */
+			csi_port = <1>;		/* Enable TX0 only */
+
+			lineinitcnt = <0x00000FA0>;
+			lptxtimecnt = <0x00000004>;
+			tclk_headercnt = <0x00180203>;
+			tclk_trailcnt = <0x00040005>;
+			ths_headercnt = <0x000D0004>;
+			twakeup = <0x00003E80>;
+			tclk_postcnt = <0x0000000A>;
+			ths_trailcnt = <0x00080006>;
+			hstxvregcnt = <0x00000020>;
+
+			/* PLL */
+			/* Bps per lane is (refclk_hz / pll_prd) * pll_fbd */
+			pll_prd = <10>;
+			pll_fbd = <125>;
+
+			port@0 {
+				ret = <0>;
+				hdmi2csi_tc358840_out0: endpoint {
+					csi-port = <4>;
+					bus-width = <4>;
+					remote-endpoint = <&hdmi2csi_csi_in0>;
+				};
+			};
+		};
+	};
+};
